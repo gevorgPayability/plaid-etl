@@ -1,0 +1,42 @@
+
+version: 0.2
+
+
+phases:
+  install:
+    commands:
+      # Use Install phase to install packages or any pre-reqs you may need throughout the build (e.g. dev deps, security checks, etc.)
+      # - echo "[Install phase]"
+  pre_build:
+    commands:
+      # Use Pre-Build phase to run tests, install any code deps or any other customization before build
+      # - echo "[Pre-Build phase]"
+  build:
+    commands:
+      # Remember TO ADD STACK NAME AND S3-PRFIX
+      - sam package -t template.yaml --output-template-file package.yaml --s3-bucket payability-builds --s3-prefix PlaidETL
+      - sam deploy --template-file package.yaml --stack-name PlaidETL --capabilities CAPABILITY_IAM --s3-prefix PlaidETL
+  post_build:
+    commands:
+      # Use Post Build for notifications, git tags and any further customization after build
+      # - echo "[Post-Build phase]"
+      - echo "SAM packaging completed on `date`"
+
+##################################
+# Build Artifacts to be uploaded #
+##################################
+
+artifacts:
+  files:
+    # list of local files relative to this build environment that will be added to the final artifact (zip)
+    - package.yaml
+  discard-paths: yes
+
+#########################################
+# Cache local files for subsequent runs #
+#########################################
+
+cache:
+  paths:
+  # List of path that CodeBuild will upload to S3 Bucket and use in subsequent runs to speed up Builds
+  # - '/root/.cache/pip'

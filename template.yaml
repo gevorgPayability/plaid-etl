@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Plaid ETL 
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 900
+    MemorySize: 256
+
+Resources:
+  PlaidETL
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: PlaidETL
+      CodeUri: src/
+      Handler: main.lambda_handler
+      Runtime: python3.7
+      Role: arn:aws:iam::625663093496:role/PYBLambdaExecutionRole
+      Layers:
+        - arn:aws:lambda:us-east-1:625663093496:layer:EtlLayer:1
+
